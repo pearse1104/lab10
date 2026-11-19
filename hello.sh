@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ $# == 1 ]
 then
-	echo hi "$1"
+	echo hi there "$1"
 else
 	echo need name as param
 fi
