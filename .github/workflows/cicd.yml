@@ -3,18 +3,20 @@ name: HTML CI/CD Pipeline
 on:
   push:
     branches: [ main ]
+    paths:
+      - '**.html' # Only triggers if an HTML file is added or modified
   pull_request:
     branches: [ main ]
+    paths:
+      - '**.html'
 
-# Required permissions for GitHub Pages deployment
 permissions:
   contents: read
   pages: write
   id-token: write
 
 jobs:
-  # --- CI: Validate HTML ---
-  ci-test:
+  ci-html:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,9 +27,8 @@ jobs:
         with:
           root: .
 
-  # --- CD: Deploy to GitHub Server ---
   cd-deploy:
-    needs: ci-test # Only deploys if CI passes
+    needs: ci-html
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
@@ -40,7 +41,7 @@ jobs:
       - name: Upload site files
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.' # Uploads the root directory containing index.html
+          path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment

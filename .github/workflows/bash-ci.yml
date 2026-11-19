@@ -1,0 +1,28 @@
+name: Bash Script CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.sh' # Only triggers if a .sh file is added or modified
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.sh'
+
+jobs:
+  ci-bash:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Bash Syntax & ShellCheck Linter
+        run: |
+          # Find all .sh files in the repo and check each one
+          find . -name "*.sh" -type f | while read -r script; do
+            echo "Checking $script..."
+            bash -n "$script"      # Built-in Bash syntax check
+            shellcheck "$script"   # Static analysis for common Bash bugs
+          done
+
